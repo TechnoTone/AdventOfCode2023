@@ -1,5 +1,10 @@
 const { test } = require("@jest/globals");
-const { part1, part2, calibrationValue2 } = require("./day01");
+const {
+  part1,
+  part2,
+  calibrationValue,
+  calibrationValueWithWords,
+} = require("./day01");
 const Input = require("./input");
 const EXAMPLE_INPUT_1 = ["1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet"];
 const EXAMPLE_INPUT_2 = [
@@ -13,7 +18,11 @@ const EXAMPLE_INPUT_2 = [
 ];
 
 test("calibrationValue", () => {
-  expect(calibrationValue2("fiveight")).toBe(58);
+  expect(calibrationValue("a1b2c3d4e5f")).toBe(15);
+});
+
+test("calibrationValueWithWords", () => {
+  expect(calibrationValueWithWords("fiveight")).toBe(58);
 });
 
 test("Part 1 Example", () => {
@@ -31,5 +40,5 @@ test("Part 2 Example", () => {
 
 test("Part 2", () => {
   const input = new Input(1).fromLines().get();
-  expect(part2(input)).toBe(54623);
+  expect(part2(input)).toBe(54591);
 });
