@@ -20,13 +20,3 @@ test.skip("Part 2", () => {
   const input = new Input([FTName]).fromLines().get();
   expect(part2(input)).toBe(0);
 });
-
-const jestConsole = console;
-
-beforeEach(() => {
-  global.console = require("console");
-});
-
-afterEach(() => {
-  global.console = jestConsole;
-});
