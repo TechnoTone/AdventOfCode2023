@@ -1,5 +1,5 @@
 const { test } = require("@jest/globals");
-const { part1, part2 } = require("./day02");
+const { part1, part2, isGamePossible, minReqCubes } = require("./day02");
 const Input = require("./input");
 const EXAMPLE_INPUT = [
   "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
@@ -9,20 +9,50 @@ const EXAMPLE_INPUT = [
   "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
 ];
 
+describe("isGamePossible", () => {
+  test("Game 1", () => {
+    expect(
+      isGamePossible("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green")
+    ).toBe(true);
+  });
+  test("Game 3", () => {
+    expect(
+      isGamePossible(
+        "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red"
+      )
+    ).toBe(false);
+  });
+});
+
 test("Part 1 Example", () => {
   expect(part1(EXAMPLE_INPUT)).toBe(8);
 });
 
-test.skip("Part 1", () => {
+test("Part 1", () => {
   const input = new Input(2).fromLines().get();
-  expect(part1(input)).toBe(0);
+  expect(part1(input)).toBe(2505);
 });
 
-test.skip("Part 2 Example", () => {
-  expect(part2(EXAMPLE_INPUT)).toBe(0);
+describe("minCubes", () => {
+  test("Game 1", () => {
+    expect(
+      minReqCubes("Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green")
+    ).toEqual({ red: 4, green: 2, blue: 6 });
+  });
+  test("Game 3", () => {
+    expect(
+      minReqCubes(
+        "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red"
+      )
+    ).toEqual({ red: 20, green: 13, blue: 6 });
+  });
 });
 
-test.skip("Part 2", () => {
+test("Part 2 Example", () => {
+  expect(part2(EXAMPLE_INPUT)).toBe(2286);
+});
+
+test("Part 2", () => {
   const input = new Input(2).fromLines().get();
-  expect(part2(input)).toBe(0);
+  expect(part2(input)).toBe(70265);
 });
