@@ -1,4 +1,4 @@
-module Day01Tests exposing (part2, tests)
+module Day01Tests exposing (..)
 
 import Day01
 import Day01Input exposing (example1, example2, input)
@@ -6,8 +6,8 @@ import Expect
 import Test exposing (Test, describe, test)
 
 
-tests : Test
-tests =
+part1 : Test
+part1 =
     describe "Part 1"
         [ test "toCalibrationValue 38" <| always <| Expect.equal (Just 38) <| Day01.toCalibrationValue "pqr3stu8vwx"
         , test "toCalibrationValue 77" <| always <| Expect.equal (Just 77) <| Day01.toCalibrationValue "treb7uchet"

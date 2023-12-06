@@ -1,4 +1,4 @@
-module Day01Input exposing (example1, example2, input)
+module Day01Input exposing (..)
 
 
 example1 : String

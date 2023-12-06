@@ -1,13 +1,4 @@
-module Day01 exposing
-    ( digitDictionary
-    , digitWords
-    , getFirstDigitWord
-    , getLastDigitWord
-    , part1
-    , part2
-    , toCalibrationValue
-    , toCalibrationValueIncludingWords
-    )
+module Day01 exposing (..)
 
 import Dict exposing (Dict)
 
