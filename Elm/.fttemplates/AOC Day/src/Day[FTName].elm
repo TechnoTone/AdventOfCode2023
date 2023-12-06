@@ -1,4 +1,4 @@
-module Day[FTName] exposing (part1, part2)
+module Day[FTName] exposing (..)
 
 
 part1 : String -> Int
