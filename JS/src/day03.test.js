@@ -27,23 +27,27 @@ test('getPartNumbers', () => {
 
 test('getSurroundingCoordinates', () => {
   const sut = getSurroundingCoordinates({partNumber: 35, coordinate: 2002, length: 2 });
-  expect(sut).toContain([1001,1002,1003,1004,2001,2004,3001,3002,3003,3004]);
+  expect(sut.toSorted()).toEqual([1001,1002,1003,1004,2001,2004,3001,3002,3003,3004]);
 })
 
 test("Part 1 Example", () => {
   expect(part1(EXAMPLE_INPUT)).toBe(4361);
 });
 
-test.skip("Part 1", () => {
+test("Part 1", () => {
   const input = new Input(3).fromLines().get();
-  expect(part1(input)).toBe(0);
+  expect(part1(input)).toBe(551094);
 });
 
-test.skip("Part 2 Example", () => {
-  expect(part2(EXAMPLE_INPUT)).toBe(0);
+test('getSymbolCoordinates when onlyGears is true', () => {
+  expect(getSymbolCoordinates(EXAMPLE_INPUT, true)).toEqual(new Set([1003, 4003, 8005]))
+})
+
+test("Part 2 Example", () => {
+  expect(part2(EXAMPLE_INPUT)).toBe(467835);
 });
 
-test.skip("Part 2", () => {
+test("Part 2", () => {
   const input = new Input(3).fromLines().get();
-  expect(part2(input)).toBe(0);
+  expect(part2(input)).toBe(80179647);
 });

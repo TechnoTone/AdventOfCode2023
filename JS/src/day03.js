@@ -1,12 +1,45 @@
 module.exports.part1 = (input) => {
-  return 0;
+  const symbolCoordinates = this.getSymbolCoordinates(input);
+  const partNumbers = this.getPartNumbers(input)
+  return partNumbers.reduce((acc, partInformation) => {
+    const surroundingCoordinates = this.getSurroundingCoordinates(partInformation);
+    if (surroundingCoordinates.some((surroundingCoordinate) => symbolCoordinates.has(surroundingCoordinate))) {
+      return partInformation.partNumber + acc;
+    }
+    return acc;
+  }, 0)
 };
 
-module.exports.getSymbolCoordinates = (schematic) => {
+module.exports.part2 = (input) => {
+  const gearCoordinates = this.getSymbolCoordinates(input, true)
+  const partNumbers = this.getPartNumbers(input);
+  const partsByGear = partNumbers.reduce((acc, partInformation) => {
+    const surroundingCoordinates = this.getSurroundingCoordinates(partInformation);
+    surroundingCoordinates.forEach((surroundingCoordinate) => { 
+      if (gearCoordinates.has(surroundingCoordinate)) {
+        const currentValue = acc[surroundingCoordinate] || []  
+        currentValue.push(partInformation.partNumber)
+        acc[surroundingCoordinate] = currentValue;
+      }
+    })
+    return acc;
+  }, {});
+
+  return Object.entries(partsByGear).reduce((acc, [_gearCoord, partNumbers]) => {
+    if(partNumbers.length === 2) {
+      return acc + partNumbers[0] * partNumbers[1]
+    }
+    return acc;
+  }, 0)
+}
+
+
+module.exports.getSymbolCoordinates = (schematic, onlyGears) => {
   const results = new Set();
   
-  schematic.forEach((row, rowIndex) => { 
-    const matches = [...row.matchAll(/[^\d\.]/g)]
+  schematic.forEach((row, rowIndex) => {
+    const matcher = onlyGears ? /\*/g : /[^\d\.]/g 
+    const matches = [...row.matchAll(matcher)]
     matches.forEach((match) => {
       results.add(match.index + rowIndex * 1000)
     })
@@ -40,7 +73,3 @@ module.exports.getSurroundingCoordinates = (partInformation) => {
 
   return surroundingCoordinate;
 } 
-
-module.exports.part2 = (input) => {
-  return 0;
-};
