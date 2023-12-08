@@ -1,6 +1,7 @@
 module Day03 exposing (..)
 
-import Parser exposing (number)
+import Dict exposing (Dict)
+import Parser exposing (number, symbol)
 import Set exposing (Set)
 
 
@@ -13,22 +14,23 @@ part1 input =
         |> List.sum
 
 
-isAdjacentToSymbol : Set Symbol -> PartNumber -> Bool
-isAdjacentToSymbol symbols partnumber =
-    let
-        surroundings =
-            getPartNumberSurroundings partnumber
-    in
-    symbols
-        |> Set.map Tuple.first
-        |> Set.intersect surroundings
-        |> Set.isEmpty
-        |> not
-
-
 part2 : String -> Int
 part2 input =
-    0
+    let
+        gearSymbols =
+            input
+                |> getSymbolCoordinates
+                |> Set.filter (Tuple.second >> (==) '*')
+    in
+    input
+        |> getPartNumbers
+        |> getPartNumbersNextToGears gearSymbols
+        |> groupByGearCoordinates
+        |> Dict.values
+        |> List.filter (List.length >> (==) 2)
+        |> List.map (List.map .number)
+        |> List.map List.product
+        |> List.sum
 
 
 type alias Symbol =
@@ -121,3 +123,53 @@ getPartNumberSurroundings partNumber =
         , [ ( left - 1, y ), ( left + length, y ) ]
         ]
         |> Set.fromList
+
+
+isAdjacentToSymbol : Set Symbol -> PartNumber -> Bool
+isAdjacentToSymbol symbols partnumber =
+    getAdjacentSymbolCoordinates symbols partnumber
+        |> List.isEmpty
+        |> not
+
+
+getAdjacentSymbolCoordinates : Set Symbol -> PartNumber -> List Coordinate
+getAdjacentSymbolCoordinates symbols partnumber =
+    let
+        surroundings =
+            getPartNumberSurroundings partnumber
+    in
+    symbols
+        |> Set.map Tuple.first
+        |> Set.intersect surroundings
+        |> Set.toList
+
+
+getPartNumbersNextToGears : Set Symbol -> List PartNumber -> List ( Coordinate, PartNumber )
+getPartNumbersNextToGears symbols partNumbers =
+    let
+        foo : PartNumber -> List ( Coordinate, PartNumber )
+        foo =
+            \partNumber ->
+                getAdjacentSymbolCoordinates symbols partNumber
+                    |> List.map (\symbol -> ( symbol, partNumber ))
+    in
+    partNumbers
+        |> List.concatMap foo
+
+
+groupByGearCoordinates : List ( Coordinate, PartNumber ) -> Dict Coordinate (List PartNumber)
+groupByGearCoordinates =
+    List.foldl
+        (\( coordinate, partNumber ) dict ->
+            Dict.update coordinate
+                (\maybePartNumbers ->
+                    case maybePartNumbers of
+                        Just partNumbers ->
+                            Just (partNumber :: partNumbers)
+
+                        Nothing ->
+                            Just [ partNumber ]
+                )
+                dict
+        )
+        Dict.empty

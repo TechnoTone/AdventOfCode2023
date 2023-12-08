@@ -69,10 +69,9 @@ part1 =
         ]
 
 
-
--- part2 : Test
--- part2 =
---     describe "Part 2"
---         [-- test "Example" <| always <| Expect.equal 0 <| Day03.part2 example
---          -- , test "Puzzle" <| always <| Expect.equal 0 <| Day03.part2 input
---         ]
+part2 : Test
+part2 =
+    describe "Part 2"
+        [ test "Example" <| always <| Expect.equal 467835 <| Day03.part2 example
+        , test "Puzzle" <| always <| Expect.equal 80179647 <| Day03.part2 input
+        ]
