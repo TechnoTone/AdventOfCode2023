@@ -1,17 +1,20 @@
 module.exports.part1 = (input) => {
-  return input.reduce((acc, line) => acc + calibrationValue(line), 0);
+  return input.reduce((acc, line) => acc + this.calibrationValue(line), 0);
 };
 
-const calibrationValue = (line) => {
+module.exports.calibrationValue = (line) => {
   const digits = line.match(/\d/g);
   return Number(digits[0] + digits[digits.length - 1]);
 };
 
 module.exports.part2 = (input) => {
-  return input.reduce((acc, line) => acc + calibrationValueWithWords(line), 0);
+  return input.reduce(
+    (acc, line) => acc + this.calibrationValueWithWords(line),
+    0
+  );
 };
 
-const calibrationValueWithWords = (line) => {
+module.exports.calibrationValueWithWords = (line) => {
   const digitMap = {
     one: "1",
     two: "2",
@@ -40,6 +43,3 @@ const calibrationValueWithWords = (line) => {
 
   return Number(digits[0] + digits[digits.length - 1]);
 };
-
-module.exports.calibrationValue = calibrationValue;
-module.exports.calibrationValueWithWords = calibrationValueWithWords;
