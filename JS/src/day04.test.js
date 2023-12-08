@@ -1,5 +1,5 @@
 const { test } = require("@jest/globals");
-const { part1, part2 } = require("./day04");
+const { part1, part2, getCardScore } = require("./day04");
 const Input = require("./input");
 const EXAMPLE_INPUT = [
   "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53",
@@ -10,20 +10,26 @@ const EXAMPLE_INPUT = [
   "Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11",
 ];
 
+test("getCardScore", () => {
+  expect(
+    getCardScore("Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53")
+  ).toEqual(8);
+});
+
 test("Part 1 Example", () => {
-  expect(part1(EXAMPLE_INPUT)).toBe(0);
+  expect(part1(EXAMPLE_INPUT)).toBe(13);
 });
 
-test.skip("Part 1", () => {
+test("Part 1", () => {
   const input = new Input(4).fromLines().get();
-  expect(part1(input)).toBe(0);
+  expect(part1(input)).toBe(25174);
 });
 
-test.skip("Part 2 Example", () => {
-  expect(part2(EXAMPLE_INPUT)).toBe(0);
+test("Part 2 Example", () => {
+  expect(part2(EXAMPLE_INPUT)).toBe(30);
 });
 
-test.skip("Part 2", () => {
+test("Part 2", () => {
   const input = new Input(4).fromLines().get();
-  expect(part2(input)).toBe(0);
+  expect(part2(input)).toBe(6420979);
 });
