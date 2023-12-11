@@ -4,6 +4,19 @@ module Day05 exposing (..)
 part1 : String -> Int
 part1 input =
     let
+        startSeeds : List Int
+        startSeeds =
+            input
+                |> String.lines
+                |> List.head
+                |> Maybe.withDefault ""
+                |> String.split " "
+                |> List.filterMap String.toInt
+
+        seedInRange : Int -> RangeTransformation -> Bool
+        seedInRange seed tx =
+            tx.start <= seed && seed < tx.start + tx.length
+
         applyMappings : List RangeTransformation -> List Int -> List Int
         applyMappings mappings seeds =
             seeds
@@ -18,7 +31,7 @@ part1 input =
                 |> Maybe.withDefault seed
     in
     getMaps input
-        |> List.foldl applyMappings (getSimpleSeeds input)
+        |> List.foldl applyMappings startSeeds
         |> List.minimum
         |> Maybe.withDefault 0
 
@@ -33,20 +46,6 @@ type alias RangeTransformation =
     , length : Int
     , transformation : Int
     }
-
-
-seedInRange : Int -> RangeTransformation -> Bool
-seedInRange seed tx =
-    tx.start <= seed && seed < tx.start + tx.length
-
-
-getSimpleSeeds : String -> List Int
-getSimpleSeeds input =
-    String.lines input
-        |> List.head
-        |> Maybe.withDefault ""
-        |> String.split " "
-        |> List.filterMap String.toInt
 
 
 getMaps : String -> List (List RangeTransformation)

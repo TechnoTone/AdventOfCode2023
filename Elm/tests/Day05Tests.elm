@@ -10,8 +10,7 @@ part1 : Test
 part1 =
     describe "Part 1"
         [ test "Example" <| always <| Expect.equal 35 <| Day05.part1 example
-
-        -- , test "Puzzle" <| always <| Expect.equal 0 <| Day05.part1 input
+        , test "Puzzle" <| always <| Expect.equal 650599855 <| Day05.part1 input
         ]
 
 
