@@ -62,6 +62,18 @@ module.exports.part2 = (input) => {
     })
   })
 
+  function chunkRange(mappedRange, mappingTable) {
+    //check seed range against mapping table
+    mappingTable.find((mapping) => {
+      mapping.start < mappedRange.start && mapping.start + mapping.length -1 >= mappedRange.start + mappedRange.length - 1
+    })
+    
+    //split into required no ranges
+    //apply current mapping
+    //for each required range call x with index
+  }
+
+
   // apply transforms to seed ranges and split where needed
 
   
