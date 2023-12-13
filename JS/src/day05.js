@@ -14,7 +14,7 @@ function processSeeds(seeds, mappingStrings) {
   // pipe seeds through the maps
   const x = seeds.map((seed) => {
     return mappingTables.reduce((acc1, mappingTable) => {
-      const validMappings =  mappingTable.filter(({start, length}) => inRange(acc1, start, length))
+      const validMappings =  mappingTable.filter(({start, end}) => inRange(acc1, start, end))
       return validMappings.reduce((acc2, {transformer}) => transformer + acc2, acc1)
     }, seed)
   })
@@ -23,8 +23,8 @@ function processSeeds(seeds, mappingStrings) {
   return Math.min(...x);
 }
 
-function inRange(seed, start, length) {
-  return seed >= start && seed <= start + length -1
+function inRange(seed, start, end) {
+  return seed >= start && seed <= end
     
 }
 
@@ -36,7 +36,7 @@ function readMapping(mapping) {
   const parsedMapping = ranges.map((range) =>  {
     return { 
       start: range[1],
-      length: range[2],
+      end: range[1] + range[2] -1,
       transformer: range[0] - range[1],
     }
   })
@@ -49,29 +49,13 @@ module.exports.part2 = (input) => {
   const seedNumbers = seedsLine.split(": ")[1].split(" ").map(Number);
   const seedRanges = []
   for(let i = 0; i < seedNumbers.length; i+=2) {
-    seedRanges.push({start: seedNumbers[i], length: seedNumbers[i+1]})
+    seedRanges.push({start: seedNumbers[i], end: seedNumbers[i] + seedNumbers[i+1] -1})
   } 
 
   // read all maps
   const mappingTables = mappingStrings.map((mapping) => readMapping(mapping))
 
-  // check seed range vs mapping range
-  mappingTables.forEach((mappingTable) => {
-    mappingTable.forEach(() => {
 
-    })
-  })
-
-  function chunkRange(mappedRange, mappingTable) {
-    //check seed range against mapping table
-    mappingTable.find((mapping) => {
-      mapping.start < mappedRange.start && mapping.start + mapping.length -1 >= mappedRange.start + mappedRange.length - 1
-    })
-    
-    //split into required no ranges
-    //apply current mapping
-    //for each required range call x with index
-  }
 
 
   // apply transforms to seed ranges and split where needed
@@ -80,6 +64,36 @@ module.exports.part2 = (input) => {
   return seedRanges
   // return processSeeds(seeds, mappingStrings);
 };
+
+module.exports.chunkRange = (mappedRange, mappingTable) => {
+  //check seed range against mapping table
+  mappingTable.find((mapTransformation) => {
+    mapTransformation.start < mappedRange.start && mapTransformation.start + mapTransformation.end >= mappedRange.start + mappedRange.length - 1
+  })
+  
+  //split into required no ranges
+}
+
+module.exports.rangeInMapTransformation = (range, mapTransformation) => {
+
+}
+
+module.exports.INTERSECTION_TYPES = {
+  NONE: 'none', // range is entirely before or entirely after transformation range 
+  INSIDE: 'inside', // range is entirely encompassed by transformation range
+  LEFT: 'left', // range overlaps transformation range at the start
+  RIGHT: 'right', // range overlaps in transformation range at the end
+  BOTH: 'both', // range overlaps transformation range at the start and end
+}
+
+module.exports.getIntersection = (range, mapTransformation) => {
+  if(range.start >= mapTransformation.start && range.end <= mapTransformation.end) {
+    return this.INTERSECTION_TYPES.INSIDE;
+  } else if (range.start < mapTransformation.start && range.end > mapTransformation.end) {
+    return this.INTERSECTION_TYPES.BOTH
+  }
+  return this.INTERSECTION_TYPES.NONE;
+}
 
 // Seed 79, soil 81, fertilizer 81, water 81, light 74, temperature 78, humidity 78, location 82.
 // Seed 14, soil 14, fertilizer 53, water 49, light 42, temperature 42, humidity 43, location 43.
