@@ -3,7 +3,7 @@ module.exports.part1 = (input) => {
   // get the seeds
   const [seedsLine, ...mappingStrings] = input.split(/\r?\n\r?\n/);
   const seeds = seedsLine.split(": ")[1].split(" ").map(Number);
-  
+
   return processSeeds(seeds, mappingStrings)
 };
 
@@ -14,8 +14,8 @@ function processSeeds(seeds, mappingStrings) {
   // pipe seeds through the maps
   const x = seeds.map((seed) => {
     return mappingTables.reduce((acc1, mappingTable) => {
-      const validMappings =  mappingTable.filter(({start, end}) => inRange(acc1, start, end))
-      return validMappings.reduce((acc2, {transformer}) => transformer + acc2, acc1)
+      const validMappings = mappingTable.filter(({ start, end }) => inRange(acc1, start, end))
+      return validMappings.reduce((acc2, { transformer }) => transformer + acc2, acc1)
     }, seed)
   })
   // get the smallest location
@@ -25,18 +25,18 @@ function processSeeds(seeds, mappingStrings) {
 
 function inRange(seed, start, end) {
   return seed >= start && seed <= end
-    
+
 }
 
 function readMapping(mapping) {
   const [_, ...rangesString] = mapping.split(/\r?\n/)
   const ranges = rangesString.map((rangeLine) => {
     return rangeLine.split(" ").map(Number);
-  }) 
-  const parsedMapping = ranges.map((range) =>  {
-    return { 
+  })
+  const parsedMapping = ranges.map((range) => {
+    return {
       start: range[1],
-      end: range[1] + range[2] -1,
+      end: range[1] + range[2] - 1,
       transformer: range[0] - range[1],
     }
   })
@@ -48,9 +48,9 @@ module.exports.part2 = (input) => {
   const [seedsLine, ...mappingStrings] = input.split(/\r?\n\r?\n/);
   const seedNumbers = seedsLine.split(": ")[1].split(" ").map(Number);
   const seedRanges = []
-  for(let i = 0; i < seedNumbers.length; i+=2) {
-    seedRanges.push({start: seedNumbers[i], end: seedNumbers[i] + seedNumbers[i+1] -1})
-  } 
+  for (let i = 0; i < seedNumbers.length; i += 2) {
+    seedRanges.push({ start: seedNumbers[i], end: seedNumbers[i] + seedNumbers[i + 1] - 1 })
+  }
 
   // read all maps
   const mappingTables = mappingStrings.map((mapping) => readMapping(mapping))
@@ -60,18 +60,32 @@ module.exports.part2 = (input) => {
 
   // apply transforms to seed ranges and split where needed
 
-  
+
   return seedRanges
   // return processSeeds(seeds, mappingStrings);
 };
 
 module.exports.chunkRange = (mappedRange, mappingTable) => {
   //check seed range against mapping table
-  mappingTable.find((mapTransformation) => {
-    mapTransformation.start < mappedRange.start && mapTransformation.start + mapTransformation.end >= mappedRange.start + mappedRange.length - 1
+  const intersectsWith = mappingTable.find((mapTransformation) => {
+    const intersection = this.getIntersection(mappedRange, mapTransformation);
+    return intersection != this.INTERSECTION_TYPES.NONE && intersection != this.INTERSECTION_TYPES.INSIDE;
   })
-  
-  //split into required no ranges
+
+  if (intersectsWith) {
+    const intersection = this.getIntersection(mappedRange, intersectsWith);
+    switch (intersection) {
+      case this.INTERSECTION_TYPES.LEFT:
+        return [{ start: mappedRange.start, end: intersectsWith.start - 1 }, { start: intersectsWith.start, end: mappedRange.end }]
+      case this.INTERSECTION_TYPES.RIGHT:
+        return [{ start: mappedRange.start, end: intersectsWith.end }, { start: intersectsWith.end + 1, end: mappedRange.end }]
+      case this.INTERSECTION_TYPES.BOTH:
+        return [{ start: mappedRange.start, end: intersectsWith.start - 1 }, { start: intersectsWith.start, end: intersectsWith.end }, { start: intersectsWith.end + 1, end: mappedRange.end }]
+    }
+  } else {
+    return [mappedRange];
+  }
+
 }
 
 module.exports.rangeInMapTransformation = (range, mapTransformation) => {
@@ -87,10 +101,14 @@ module.exports.INTERSECTION_TYPES = {
 }
 
 module.exports.getIntersection = (range, mapTransformation) => {
-  if(range.start >= mapTransformation.start && range.end <= mapTransformation.end) {
+  if (range.start >= mapTransformation.start && range.end <= mapTransformation.end) {
     return this.INTERSECTION_TYPES.INSIDE;
   } else if (range.start < mapTransformation.start && range.end > mapTransformation.end) {
     return this.INTERSECTION_TYPES.BOTH
+  } else if (range.start < mapTransformation.start && range.end >= mapTransformation.start) {
+    return this.INTERSECTION_TYPES.LEFT;
+  } else if (range.start <= mapTransformation.end && range.end > mapTransformation.end) {
+    return this.INTERSECTION_TYPES.RIGHT;
   }
   return this.INTERSECTION_TYPES.NONE;
 }
