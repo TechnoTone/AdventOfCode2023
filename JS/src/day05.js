@@ -40,7 +40,7 @@ function readMapping(mapping) {
       transformer: range[0] - range[1],
     }
   })
-  return parsedMapping;
+  return parsedMapping.toSorted((a, b) => a.start - b.start);
 }
 
 module.exports.part2 = (input) => {
@@ -55,15 +55,31 @@ module.exports.part2 = (input) => {
   // read all maps
   const mappingTables = mappingStrings.map((mapping) => readMapping(mapping))
 
-
-
+  const singleSeed = seedRanges[0];
 
   // apply transforms to seed ranges and split where needed
+  const allRanges = mappingTables.reduce((acc, mappingTable) => this.chunkRanges(acc, mappingTable), [singleSeed])
 
+  const [result] = allRanges.map((range) => range.start).toSorted();
 
-  return seedRanges
-  // return processSeeds(seeds, mappingStrings);
+  return result
 };
+
+module.exports.applyTransforms = (chunks, mappingTable) => {
+  return chunks.map((chunk) => {
+    const intersectsWith = mappingTable.find((mapTransformation) =>
+      this.getIntersection(chunk, mapTransformation) === this.INTERSECTION_TYPES.INSIDE
+    )
+    return intersectsWith ? { start: chunk.start + intersectsWith.transformer, end: chunk.end + intersectsWith.transformer } : chunk
+  })
+}
+
+module.exports.chunkRanges = (ranges, mappingTable) => {
+  const chunks = ranges.map((range) => this.chunkRange(range, mappingTable)).flat();
+  const transformed = this.applyTransforms(chunks, mappingTable)
+  console.log({ mappingTable, ranges, chunks, transformed })
+  return transformed
+}
 
 module.exports.chunkRange = (mappedRange, mappingTable) => {
   //check seed range against mapping table
@@ -72,16 +88,23 @@ module.exports.chunkRange = (mappedRange, mappingTable) => {
     return intersection != this.INTERSECTION_TYPES.NONE && intersection != this.INTERSECTION_TYPES.INSIDE;
   })
 
+  const chunks = []
+
   if (intersectsWith) {
     const intersection = this.getIntersection(mappedRange, intersectsWith);
     switch (intersection) {
       case this.INTERSECTION_TYPES.LEFT:
-        return [{ start: mappedRange.start, end: intersectsWith.start - 1 }, { start: intersectsWith.start, end: mappedRange.end }]
+        chunks.push({ start: mappedRange.start, end: intersectsWith.start - 1 }, { start: intersectsWith.start, end: mappedRange.end })
+        break
       case this.INTERSECTION_TYPES.RIGHT:
-        return [{ start: mappedRange.start, end: intersectsWith.end }, { start: intersectsWith.end + 1, end: mappedRange.end }]
+        chunks.push({ start: mappedRange.start, end: intersectsWith.end }, { start: intersectsWith.end + 1, end: mappedRange.end })
+        break
       case this.INTERSECTION_TYPES.BOTH:
-        return [{ start: mappedRange.start, end: intersectsWith.start - 1 }, { start: intersectsWith.start, end: intersectsWith.end }, { start: intersectsWith.end + 1, end: mappedRange.end }]
+        chunks.push({ start: mappedRange.start, end: intersectsWith.start - 1 }, { start: intersectsWith.start, end: intersectsWith.end }, { start: intersectsWith.end + 1, end: mappedRange.end })
+        break
     }
+
+    return chunks.map((chunk) => this.chunkRange(chunk, mappingTable)).flat()
   } else {
     return [mappedRange];
   }

@@ -1,5 +1,5 @@
 const { test, describe, expect } = require("@jest/globals");
-const { part1, part2, getIntersection, INTERSECTION_TYPES, chunkRange } = require("./day05");
+const { part1, part2, getIntersection, INTERSECTION_TYPES, chunkRange, applyTransforms } = require("./day05");
 const Input = require("./input");
 const EXAMPLE_INPUT =
   `seeds: 79 14 55 13
@@ -82,27 +82,26 @@ describe("getIntersection", () => {
     const range = { start: 15, end: 25 };
     expect(getIntersection(range, mapTransformation)).toBe(INTERSECTION_TYPES.RIGHT)
   })
-
 })
 
+const mappingTable = [
+  {
+    start: 5,
+    end: 10,
+    transformer: 5
+  },
+  {
+    start: 11,
+    end: 20,
+    transformer: 9
+  },
+  {
+    start: 25,
+    end: 30,
+    transformer: -12
+  }
+]
 describe("chunkRange", () => {
-  const mappingTable = [
-    {
-      start: 5,
-      end: 10,
-      transformer: 5
-    },
-    {
-      start: 11,
-      end: 20,
-      transformer: 9
-    },
-    {
-      start: 25,
-      end: 30,
-      transformer: 5
-    }
-  ]
   test("remains in one chunk if no ranges in the mapping table intersect", () => {
     const range = { start: 100, end: 200 }
     expect(chunkRange(range, mappingTable)).toStrictEqual([range]);
@@ -128,14 +127,22 @@ describe("chunkRange", () => {
   })
 
   test("splits the range in 2 when the range spans 2 adjacent mapTransformations", () => {
-
+    const range = { start: 6, end: 19 }
+    expect(chunkRange(range, mappingTable)).toStrictEqual([{ start: 6, end: 10 }, { start: 11, end: 19 }])
   })
 
   test("splits the range in 3 when the range spans 2 mapTransformations with a gap", () => {
-
+    const range = { start: 15, end: 27 }
+    expect(chunkRange(range, mappingTable)).toStrictEqual([{ start: 15, end: 20 }, { start: 21, end: 24 }, { start: 25, end: 27 }])
   })
 
   test("splits the range in to 6 chunks when the the range spans across 3 ranges where 2 are adjacent and one of those is close to another", () => {
-
+    const range = { start: 2, end: 35 }
+    expect(chunkRange(range, mappingTable)).toStrictEqual([{ start: 2, end: 4 }, { start: 5, end: 10 }, { start: 11, end: 20 }, { start: 21, end: 24 }, { start: 25, end: 30 }, { start: 31, end: 35 }])
   })
+})
+
+test("applyTransforms", () => {
+  const chunks = [{ start: 2, end: 4 }, { start: 5, end: 10 }, { start: 11, end: 20 }, { start: 21, end: 24 }, { start: 25, end: 30 }, { start: 31, end: 35 }];
+  expect(applyTransforms(chunks, mappingTable)).toStrictEqual([{ start: 2, end: 4 }, { start: 10, end: 15 }, { start: 20, end: 29 }, { start: 21, end: 24 }, { start: 13, end: 18 }, { start: 31, end: 35 }])
 })
