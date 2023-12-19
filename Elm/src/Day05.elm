@@ -38,22 +38,19 @@ part1 input =
         |> Maybe.withDefault 0
 
 
-
--- part2 : String -> Int
-
-
+part2 : String -> Int
 part2 input =
-    let
-        startSeedRanges : List SeedRange
-        startSeedRanges =
-            input
-                |> String.lines
-                |> List.head
-                |> Maybe.withDefault ""
-                |> String.split " "
-                |> List.filterMap String.toInt
-                |> pair
+    input
+        |> getStartSeedRanges
+        |> List.concatMap (applyMappings <| getMaps input)
+        |> List.map .start
+        |> List.minimum
+        |> Maybe.withDefault 0
 
+
+getStartSeedRanges : String -> List SeedRange
+getStartSeedRanges input =
+    let
         pair : List Int -> List SeedRange
         pair ints =
             case ints of
@@ -63,19 +60,24 @@ part2 input =
                 _ ->
                     []
     in
-    startSeedRanges
-        |> List.concatMap (applyMappings <| getMaps input)
-
-
-
--- |> List.map .start
--- |> List.minimum
+    input
+        |> String.lines
+        |> List.head
+        |> Maybe.withDefault ""
+        |> String.split " "
+        |> List.filterMap String.toInt
+        |> pair
 
 
 applyMappings : List (List MapTransformation) -> SeedRange -> List SeedRange
 applyMappings mappings seedRange =
-    mappings
-        |> List.concatMap (applyMapping seedRange)
+    case mappings of
+        [] ->
+            [ seedRange ]
+
+        first :: rest ->
+            applyMapping seedRange first
+                |> List.concatMap (applyMappings rest)
 
 
 applyMapping : SeedRange -> List MapTransformation -> List SeedRange
@@ -106,12 +108,6 @@ multiFragmentSeedRange seedRange mappings =
 
 fragmentSeedRange : SeedRange -> MapTransformation -> List SeedRange
 fragmentSeedRange seedRange map =
-    -- let
-    --     overlap =
-    --         getOverlapType seedRange map
-    --     _ =
-    --         Debug.log "overlap" ( seedRange, map, overlap )
-    -- in
     case getOverlapType seedRange map of
         None ->
             [ seedRange ]
@@ -131,10 +127,6 @@ fragmentSeedRange seedRange map =
 
 applyTransformations : List MapTransformation -> SeedRange -> SeedRange
 applyTransformations mappings seedRange =
-    -- let
-    --     _ =
-    --         Debug.log "applyTransformations" ( seedRange, mappings )
-    -- in
     mappings
         |> List.filter (\tx -> tx.start <= seedRange.start && tx.end >= seedRange.end)
         |> List.head
