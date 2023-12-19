@@ -1,5 +1,5 @@
 {
-  "name": "adventofcode2022_js",
+  "name": "adventofcode2023_js",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TechnoTone/AdventOfCode2022_JS.git"
+    "url": "git+https://github.com/TechnoTone/AdventOfCode2023.git"
   },
   "author": "TechnoTone",
   "license": "ISC",
@@ -15,9 +15,9 @@
     "adventofcode"
   ],
   "bugs": {
-    "url": "https://github.com/TechnoTone/AdventOfCode2022_JS/issues"
+    "url": "https://github.com/TechnoTone/AdventOfCode2023/issues"
   },
-  "homepage": "https://github.com/TechnoTone/AdventOfCode2022_JS#readme",
+  "homepage": "https://github.com/TechnoTone/AdventOfCode2023#readme",
   "devDependencies": {
     "jest": "^26.6.3",
     "@jest/globals": "^26.6.2"
