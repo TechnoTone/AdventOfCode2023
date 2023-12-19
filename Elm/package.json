@@ -1,4 +1,19 @@
 {
+  "name": "adventofcode2023_elm",
+  "version": "1.0.0",
+  "directories": {
+    "test": "tests"
+  },
+  "author": "TechnoTone",
+  "license": "ISC",
+  "description": "",
+  "keywords": [
+    "adventofcode"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TechnoTone/AdventOfCode2023.git"
+  },
   "scripts": {
     "test": "elm-test --watch"
   },

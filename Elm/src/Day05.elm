@@ -1,5 +1,7 @@
 module Day05 exposing (..)
 
+import List.Extra as List
+
 
 part1 : String -> Int
 part1 input =
@@ -65,6 +67,11 @@ part2 input =
         |> List.concatMap (applyMappings <| getMaps input)
 
 
+
+-- |> List.map .start
+-- |> List.minimum
+
+
 applyMappings : List (List MapTransformation) -> SeedRange -> List SeedRange
 applyMappings mappings seedRange =
     mappings
@@ -74,19 +81,37 @@ applyMappings mappings seedRange =
 applyMapping : SeedRange -> List MapTransformation -> List SeedRange
 applyMapping seedRange mapping =
     mapping
-        |> List.concatMap (applyMap seedRange)
+        |> multiFragmentSeedRange seedRange
         |> List.map (applyTransformations mapping)
 
 
-applyMap : SeedRange -> MapTransformation -> List SeedRange
-applyMap seedRange map =
+multiFragmentSeedRange : SeedRange -> List MapTransformation -> List SeedRange
+multiFragmentSeedRange seedRange mappings =
     let
-        overlap =
-            getOverlapType seedRange map
+        overlaps overlapType =
+            overlapType /= None && overlapType /= Inner
 
-        _ =
-            Debug.log "overlap" ( seedRange, map, overlap )
+        overlappedMapping =
+            List.filter (getOverlapType seedRange >> overlaps) mappings
+                |> List.head
     in
+    case overlappedMapping of
+        Just mapping ->
+            fragmentSeedRange seedRange mapping
+                |> List.concatMap (\sr -> multiFragmentSeedRange sr mappings)
+
+        Nothing ->
+            [ seedRange ]
+
+
+fragmentSeedRange : SeedRange -> MapTransformation -> List SeedRange
+fragmentSeedRange seedRange map =
+    -- let
+    --     overlap =
+    --         getOverlapType seedRange map
+    --     _ =
+    --         Debug.log "overlap" ( seedRange, map, overlap )
+    -- in
     case getOverlapType seedRange map of
         None ->
             [ seedRange ]
@@ -106,6 +131,10 @@ applyMap seedRange map =
 
 applyTransformations : List MapTransformation -> SeedRange -> SeedRange
 applyTransformations mappings seedRange =
+    -- let
+    --     _ =
+    --         Debug.log "applyTransformations" ( seedRange, mappings )
+    -- in
     mappings
         |> List.filter (\tx -> tx.start <= seedRange.start && tx.end >= seedRange.end)
         |> List.head
