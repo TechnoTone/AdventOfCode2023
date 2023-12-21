@@ -13,22 +13,21 @@ test("Part 1 Example", () => {
   expect(part1(EXAMPLE_INPUT)).toBe(6440);
 });
 
-test.skip("Part 1", () => {
+test("Part 1", () => {
   const input = new Input(7).fromLines().get();
-  expect(part1(input)).toBe(0);
+  expect(part1(input)).toBe(253954294);
 });
 
-test.skip("Part 1 dan", () => {
+test("Part 1 dan", () => {
   const input = new Input(7, true).fromLines().get();
-  expect(part1(input)).toBe(0);
+  expect(part1(input)).toBe(252656917);
 });
 
-
-test.skip("Part 2 Example", () => {
-  expect(part2(EXAMPLE_INPUT)).toBe(0);
+test("Part 2 Example", () => {
+  expect(part2(EXAMPLE_INPUT)).toBe(5905);
 });
 
-test.skip("Part 2", () => {
+test("Part 2", () => {
   const input = new Input(7).fromLines().get();
   expect(part2(input)).toBe(0);
 });
