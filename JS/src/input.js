@@ -3,9 +3,10 @@ const fs = require("fs");
 class Input {
   data;
 
-  constructor(n) {
+  constructor(n, isDan = false) {
     n = ("0" + n.toString()).slice(-2);
-    this.data = fs.readFileSync(`day${n}.txt`, "utf-8");
+    const file = isDan ? `dan-input/day${n}.txt` : `day${n}.txt`
+    this.data = fs.readFileSync(file, "utf-8");
   }
 
   fromLines() {

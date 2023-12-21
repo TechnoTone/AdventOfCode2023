@@ -33,6 +33,11 @@ test("Part 1", () => {
   expect(part1(input)).toBe(2505);
 });
 
+test("Part 1 dan", () => {
+  const input = new Input(2, true).fromLines().get();
+  expect(part1(input)).toBe(2545);
+});
+
 describe("minCubes", () => {
   test("Game 1", () => {
     expect(
@@ -55,4 +60,9 @@ test("Part 2 Example", () => {
 test("Part 2", () => {
   const input = new Input(2).fromLines().get();
   expect(part2(input)).toBe(70265);
+});
+
+test("Part 2 dan", () => {
+  const input = new Input(2, true).fromLines().get();
+  expect(part2(input)).toBe(78111);
 });

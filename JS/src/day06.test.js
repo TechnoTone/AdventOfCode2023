@@ -12,6 +12,11 @@ test("Part 1", () => {
   expect(part1(input)).toBe(160816);
 });
 
+test("Part 1 dan", () => {
+  const input = new Input(6, true).fromLines().get();
+  expect(part1(input)).toBe(220320);
+});
+
 test("Part 2 Example", () => {
   expect(part2(EXAMPLE_INPUT)).toBe(71503);
 });
@@ -19,4 +24,9 @@ test("Part 2 Example", () => {
 test("Part 2", () => {
   const input = new Input(6).fromLines().get();
   expect(part2(input)).toBe(46561107);
+});
+
+test("Part 2 dan", () => {
+  const input = new Input(6, true).fromLines().get();
+  expect(part2(input)).toBe(34454850);
 });

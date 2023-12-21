@@ -51,6 +51,11 @@ test("Part 1", () => {
   expect(part1(input)).toBe(650599855);
 });
 
+test("Part 1 dan", () => {
+  const input = new Input(5, true).get();
+  expect(part1(input)).toBe(462648396);
+});
+
 test("Part 2 Example", () => {
   expect(part2(EXAMPLE_INPUT)).toBe(46);
 });
@@ -58,6 +63,11 @@ test("Part 2 Example", () => {
 test("Part 2", () => {
   const input = new Input(5).get();
   expect(part2(input)).toBe(1240035);
+});
+
+test("Part 2 dan", () => {
+  const input = new Input(5, true).get();
+  expect(part2(input)).toBe(2520479);
 });
 
 describe("getIntersection", () => {
