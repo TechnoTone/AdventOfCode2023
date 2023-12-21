@@ -29,7 +29,7 @@ test("Part 2 Example", () => {
 
 test("Part 2", () => {
   const input = new Input(7).fromLines().get();
-  expect(part2(input)).toBe(0);
+  expect(part2(input)).toBeGreaterThan(254833898);
 });
 
 test.skip("Part 2 dan", () => {
