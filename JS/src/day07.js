@@ -51,6 +51,7 @@ function getCardCounts(hand, jokers) {
   if (jokers) {
     const jokerCount = cardCounts.J || 0;
     if (jokerCount) {
+      if (jokerCount === 5) return [5];
       delete cardCounts.J;
       const counts = Object.values(cardCounts).sort((a, b) => b - a);
       counts[0] += jokerCount;
