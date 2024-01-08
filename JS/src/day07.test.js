@@ -32,7 +32,7 @@ test("Part 2", () => {
   expect(part2(input)).toBe(254837398);
 });
 
-test.skip("Part 2 dan", () => {
+test("Part 2 dan", () => {
   const input = new Input(7, true).fromLines().get();
-  expect(part2(input)).toBe(0);
+  expect(part2(input)).toBe(253499763);
 });

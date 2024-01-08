@@ -1,4 +1,4 @@
-const { test } = require("@jest/globals");
+const { test, expect } = require("@jest/globals");
 const { part1, part2 } = require("./day08");
 const Input = require("./input");
 const EXAMPLE_INPUT_1 = [
@@ -52,10 +52,20 @@ test("Part 1 dan", () => {
 });
 
 test("Part 2 Example", () => {
-  expect(part2(EXAMPLE_INPUT_3)).toBe(0);
+  expect(part2(EXAMPLE_INPUT_3)).toBe(6);
 });
 
-test.skip("Part 2", () => {
+test("Part 2", () => {
   const input = new Input(8).fromLines().get();
-  expect(part2(input)).toBe(0);
+  expect(part2(input)).toBe(18625484023687);
 });
+
+test("Part 2 dan", () => {
+  const input = new Input(8, true).fromLines().get();
+  expect(part2(input)).toBe(14616363770447);
+});
+
+// test("findPrimeFactors", () => {
+//   expect(findPrimeFactors(13771)).toEqual([47, 293])
+//   expect(findPrimeFactors(29 * 31 * 37 * 41 * 43)).toEqual([29, 31, 37, 41, 43])
+// })
