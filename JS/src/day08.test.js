@@ -64,8 +64,3 @@ test("Part 2 dan", () => {
   const input = new Input(8, true).fromLines().get();
   expect(part2(input)).toBe(14616363770447);
 });
-
-// test("findPrimeFactors", () => {
-//   expect(findPrimeFactors(13771)).toEqual([47, 293])
-//   expect(findPrimeFactors(29 * 31 * 37 * 41 * 43)).toEqual([29, 31, 37, 41, 43])
-// })
