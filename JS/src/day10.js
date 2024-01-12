@@ -1,3 +1,5 @@
+const { ignoreErrors } = require("./utils");
+
 const DIRECTION = {
   UP: "up",
   DOWN: "down",
@@ -15,6 +17,8 @@ module.exports.part2 = (input) => {
     .fill()
     .map(() => new Array(input[0].length).fill("."));
   pipeCoordinates.forEach(([x, y]) => (cleanMap[y][x] = input[y][x]));
+
+  // TODO: replace start (pipeCoordinates[0]) with appropriate pipe character
 
   return countInsideCoordinates(cleanMap);
 };
@@ -55,7 +59,7 @@ function getStartCoordinates(input) {
 }
 
 function getPipeCoordinates(input) {
-  const getPipeAt = (x, y) => input[y][x];
+  const getPipeAt = ignoreErrors((x, y) => input[y][x]);
   let [x, y] = getStartCoordinates(input);
 
   let previousDirection = null;
@@ -94,37 +98,55 @@ function getPipeCoordinates(input) {
 }
 
 function countInsideCoordinates(input) {
-  return input.reduce((acc, row) => {
+  const debugging = [];
+  const total = input.reduce((acc, row) => {
+    debugging.push("");
+    let count = 0;
+    let isInside = false;
+    let lastCorner = null;
     for (let x = 0; x < row.length; x++) {
-      let isInside = false;
-      let lastCorner = null;
       switch (row[x]) {
         case "|":
+          debugging[debugging.length - 1] += "|";
           isInside = !isInside;
           break;
         case "F":
-          isInside = !isInside;
+          debugging[debugging.length - 1] += "F";
           lastCorner = "F";
           break;
         case "L":
-          isInside = !isInside;
+          debugging[debugging.length - 1] += "L";
           lastCorner = "L";
           break;
         case "7":
-          const f = lastCorner === "F";
-          isInside = (isInside || f) && !(isInside && f);
+          debugging[debugging.length - 1] += "7";
+          isInside = lastCorner === "L" ? !isInside : isInside;
           lastCorner = null;
           break;
         case "J":
-          const l = lastCorner === "L";
-          isInside = (isInside || l) && !(isInside && l);
+          debugging[debugging.length - 1] += "J";
+          isInside = lastCorner === "F" ? !isInside : isInside;
           lastCorner = null;
           break;
-      }
-      if (row[x] === "." && isInside) {
-        acc++;
+        case "-":
+          debugging[debugging.length - 1] += "-";
+          break;
+        case ".":
+          if (isInside) {
+            count++;
+            debugging[debugging.length - 1] += "I";
+          } else {
+            debugging[debugging.length - 1] += "O";
+          }
+          break;
+        default:
+        // throw new Error(`Unknown pipe character ${row[x]}`);
       }
     }
-    return acc;
+    console.log({ row: row.join("") });
+    return acc + count;
   }, 0);
+
+  console.log({ debugging });
+  return total;
 }
