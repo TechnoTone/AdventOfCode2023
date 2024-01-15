@@ -18,7 +18,7 @@ module.exports.part2 = (input) => {
     .map(() => new Array(input[0].length).fill("."));
   pipeCoordinates.forEach(([x, y]) => (cleanMap[y][x] = input[y][x]));
 
-  // TODO: replace start (pipeCoordinates[0]) with appropriate pipe character
+  replaceStartPipeWithPipeCharacter(cleanMap, pipeCoordinates);
 
   return countInsideCoordinates(cleanMap);
 };
@@ -98,55 +98,63 @@ function getPipeCoordinates(input) {
 }
 
 function countInsideCoordinates(input) {
-  const debugging = [];
   const total = input.reduce((acc, row) => {
-    debugging.push("");
-    let count = 0;
     let isInside = false;
     let lastCorner = null;
     for (let x = 0; x < row.length; x++) {
       switch (row[x]) {
         case "|":
-          debugging[debugging.length - 1] += "|";
           isInside = !isInside;
           break;
         case "F":
-          debugging[debugging.length - 1] += "F";
           lastCorner = "F";
           break;
         case "L":
-          debugging[debugging.length - 1] += "L";
           lastCorner = "L";
           break;
         case "7":
-          debugging[debugging.length - 1] += "7";
           isInside = lastCorner === "L" ? !isInside : isInside;
           lastCorner = null;
           break;
         case "J":
-          debugging[debugging.length - 1] += "J";
           isInside = lastCorner === "F" ? !isInside : isInside;
           lastCorner = null;
           break;
-        case "-":
-          debugging[debugging.length - 1] += "-";
-          break;
         case ".":
           if (isInside) {
-            count++;
-            debugging[debugging.length - 1] += "I";
-          } else {
-            debugging[debugging.length - 1] += "O";
+            acc++;
           }
           break;
-        default:
-        // throw new Error(`Unknown pipe character ${row[x]}`);
       }
     }
-    console.log({ row: row.join("") });
-    return acc + count;
+    return acc;
   }, 0);
 
-  console.log({ debugging });
   return total;
+}
+
+function replaceStartPipeWithPipeCharacter(pipeMap, pipeCoordinates) {
+  const [x, y] = pipeCoordinates[0];
+
+  const direction = ([x2, y2]) => {
+    if (x2 < x) return DIRECTION.LEFT;
+    if (x2 > x) return DIRECTION.RIGHT;
+    if (y2 < y) return DIRECTION.UP;
+    if (y2 > y) return DIRECTION.DOWN;
+  };
+
+  const nextPipe = direction(pipeCoordinates[1]);
+  const lastPipe = direction(pipeCoordinates.at(-1));
+  const pipeJoint = [nextPipe, lastPipe].sort().join("-");
+
+  const replacement = {
+    "down-left": "7",
+    "down-right": "F",
+    "down-up": "|",
+    "left-right": "-",
+    "left-up": "J",
+    "right-up": "L",
+  }[pipeJoint];
+
+  pipeMap[y][x] = replacement;
 }

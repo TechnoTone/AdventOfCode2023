@@ -46,9 +46,5 @@ test("Part 2 Example 3", () => {
 
 test("Part 2", () => {
   const input = new Input(10).fromLines().get();
-  expect(part2(input)).toBeGreaterThan(358);
-  expect(part2(input)).toBeLessThan(1797);
+  expect(part2(input)).toBe(363);
 });
-
-//F7L-|-LL|F--7|L7FJS7FJLJJ||||L-7L---7F-7|F7L--JLJL-JLJ|FJ|F----JFF--7||7J.7L|-F|-LFJ|7L---7L7.LJLJLJF|||F--7LJFJL7||F7|F---7LJL--J|LJJ..L77J
-//OOOOOOOO|F--7|L7FJ7FJLJI||||L-7L---7F-7|F7L--JLJL-JLJ|FJ|F----JOF--7||OOOOOOOOOOOFJ|OL---7L7OLJLJLJO|||F--7LJFJL7||F7|F---7LJL--J|IIIIIIIII
