@@ -1,4 +1,28 @@
 module.exports.part1 = (input) => {
+  const { galaxyCoordinates, rowExpansions, columnExpansions } = getGalaxiesAndExpansions(input);
+
+  const pairedGalaxies = getAllPairs(galaxyCoordinates);
+
+  const galaxyDistances = pairedGalaxies.map((pair) => {
+    return getExpansion(pair, rowExpansions, columnExpansions) + calculateDistance(pair)
+  })
+
+  return galaxyDistances.reduce((acc, distance) => acc + distance);
+};
+
+module.exports.part2 = (input) => {
+  const { galaxyCoordinates, rowExpansions, columnExpansions } = getGalaxiesAndExpansions(input);
+
+  const pairedGalaxies = getAllPairs(galaxyCoordinates);
+
+  const galaxyDistances = pairedGalaxies.map((pair) => {
+    return getExpansion(pair, rowExpansions, columnExpansions, 1000000) + calculateDistance(pair)
+  })
+
+  return galaxyDistances.reduce((acc, distance) => acc + distance);
+};
+
+function getGalaxiesAndExpansions(input) {
   // find and map galaxies coordinates
   const { galaxyCoordinates, rowExpansions } = input.reduce((acc, row, yIndex) => {
     const coordinates = [...row.matchAll(/#/g)].map((match) => [match.index, yIndex])
@@ -21,14 +45,8 @@ module.exports.part1 = (input) => {
     return acc
   }, []);
 
-  const pairedGalaxies = getAllPairs(galaxyCoordinates);
-
-  const galaxyDistances = pairedGalaxies.map((pair) => {
-    return getExpansion(pair, rowExpansions, columnExpansions) + calculateDistance(pair)
-  })
-
-  return galaxyDistances.reduce((acc, distance) => acc + distance);
-};
+  return { galaxyCoordinates, rowExpansions, columnExpansions }
+}
 
 function getExpansion([[ax, ay], [bx, by]], rowExpansions, columnExpansions, factor = 2) {
   return columnExpansions.filter((column) => inRange(column, [ax, bx])).length * (factor - 1)
@@ -50,36 +68,4 @@ function getAllPairs(list) {
     }
     return acc
   }, []);
-};
-
-module.exports.part2 = (input) => {
-  // find and map galaxies coordinates
-  const { galaxyCoordinates, rowExpansions } = input.reduce((acc, row, yIndex) => {
-    const coordinates = [...row.matchAll(/#/g)].map((match) => [match.index, yIndex])
-    if (coordinates.length === 0) {
-      acc.rowExpansions.push(yIndex)
-    } else {
-      acc.galaxyCoordinates.push(...coordinates)
-    }
-    return acc
-  }, {
-    galaxyCoordinates: [],
-    rowExpansions: []
-  });
-
-  // find columns to expand
-  const columnExpansions = input[0].split("").reduce((acc, _, columnIndex) => {
-    if (galaxyCoordinates.every(([x]) => x !== columnIndex)) {
-      acc.push(columnIndex)
-    }
-    return acc
-  }, []);
-
-  const pairedGalaxies = getAllPairs(galaxyCoordinates);
-
-  const galaxyDistances = pairedGalaxies.map((pair) => {
-    return getExpansion(pair, rowExpansions, columnExpansions, 1000000) + calculateDistance(pair)
-  })
-
-  return galaxyDistances.reduce((acc, distance) => acc + distance);
 };
