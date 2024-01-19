@@ -41,13 +41,6 @@ type alias PipeDiagram =
     Dict Coordinate Pipe
 
 
-
--- type alias State =
---     { originalPipeDiagram : PipeDiagram
---     , startCoordinate : Maybe Coordinate
---     }
-
-
 parsePipeDiagram : String -> ( PipeDiagram, Coordinate )
 parsePipeDiagram input =
     let
