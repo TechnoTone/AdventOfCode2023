@@ -33,7 +33,7 @@ function count([springs, groups], memo) {
     return result;
   }
 
-  if (springs.length < groups[0]) {
+  if (springs.length < sum(groups) + groups.length - 1) {
     memo.set(key, 0);
     return 0;
   }
@@ -54,4 +54,8 @@ function count([springs, groups], memo) {
   memo.set(key, total);
 
   return total;
+}
+
+function sum(arr) {
+  return arr.reduce((acc, n) => acc + n);
 }
