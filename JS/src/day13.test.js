@@ -19,17 +19,36 @@ const EXAMPLE_INPUT = [
   "#....#..#",
 ];
 
+// Be aware of this case 
+
+// .#.###.##
+// .#.###.##
+// .#.#.##.#
+// ##..#.###
+// .##..##.#
+// .#.##.#..
+// #.###.#.#
+// #.###.#.#
+// .#.##.#..
+// .##..####
+// ##..#.###
+
 test("Part 1 Example", () => {
   expect(part1(EXAMPLE_INPUT)).toBe(405);
 });
 
-test.skip("Part 1", () => {
+test("Part 1", () => {
   const input = new Input(13).fromLines().get();
-  expect(part1(input)).toBe(0);
+  expect(part1(input)).toBe(28651);
 });
 
-test.skip("Part 2 Example", () => {
-  expect(part2(EXAMPLE_INPUT)).toBe(0);
+test("Part 1 Dan", () => {
+  const input = new Input(13, true).fromLines().get();
+  expect(part1(input)).toBe(30518);
+});
+
+test("Part 2 Example", () => {
+  expect(part2(EXAMPLE_INPUT)).toBe(400);
 });
 
 test.skip("Part 2", () => {
