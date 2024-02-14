@@ -1,42 +1,57 @@
 module.exports.part1 = (input) => {
   const patterns = parsePatterns(input);
-
   const reflections = patterns.map((pattern) => {
-    return getScore(pattern)
+    return getScores(pattern)[0]
   })
 
-  return reflections.reduce((acc, reflection) => acc + reflection);
+  return reflections.reduce((acc, reflection) => acc + reflection, 0);
 };
 
-function getScore({ columns, rows }) {
-  const horizontalReflection = findReflectionPoint(rows) * 100;
-  const verticalReflection = findReflectionPoint(columns);
-  return isNaN(horizontalReflection) ? verticalReflection : horizontalReflection;
+function getScores({ columns, rows }, allowSmudge = false) {
+  const horizontalReflections = findReflectionPoints(rows, allowSmudge);
+  const verticalReflections = findReflectionPoints(columns, allowSmudge);
+
+  const scoredHorizontals = horizontalReflections.map((reflection) => reflection * 100)
+
+  return [verticalReflections, scoredHorizontals].flat();
 }
 
-function findReflectionPoint(lines) {
-  const midPoint = (lines.length - 1) / 2
-  const possibleCombinations = [];
-
-  for (i = 0; i < midPoint; i++) {
-    possibleCombinations.push([midPoint - i - 1, midPoint - i])
-    possibleCombinations.push([midPoint + i, midPoint + i + 1])
+function findReflectionPoints(lines, allowSmudge) {
+  const reflectionPoints = [];
+  for (i = 0; i < lines.length - 1; i++) {
+    if (isReflectionPoint(lines, i, i + 1, allowSmudge)) {
+      reflectionPoints.push(i + 1);
+    }
   }
-
-  const reflectionPoint =
-    possibleCombinations.find(([lowIndex, highIndex]) => isReflectionPoint(lines, lowIndex, highIndex))
-
-  return reflectionPoint?.[1]
+  return reflectionPoints;
 }
 
-function isReflectionPoint(lines, lowIndex, highIndex) {
+function isReflectionPoint(lines, lowIndex, highIndex, allowSmudge) {
   if (lines[lowIndex] === lines[highIndex]) {
     if (lowIndex === 0 || highIndex === lines.length - 1) {
       return true;
     }
-    return isReflectionPoint(lines, lowIndex - 1, highIndex + 1)
+    return isReflectionPoint(lines, lowIndex - 1, highIndex + 1, allowSmudge)
   } else {
+    if (allowSmudge) {
+      if (smudgeCount(lines[lowIndex], lines[highIndex]) === 1) {
+        if (lowIndex === 0 || highIndex === lines.length - 1) {
+          return true;
+        }
+        return isReflectionPoint(lines, lowIndex - 1, highIndex + 1, false)
+      }
+    }
     return false
+  }
+}
+
+function smudgeCount(lineA, lineB) {
+  if (lineA.length === 0)
+    return 0;
+  if (lineA[0] === lineB[0]) {
+    return smudgeCount(lineA.slice(1), lineB.slice(1))
+  } else {
+    return smudgeCount(lineA.slice(1), lineB.slice(1)) + 1
   }
 }
 
@@ -61,75 +76,14 @@ function parsePatterns(input) {
 }
 
 module.exports.part2 = (input) => {
+  console.log(input)
   const patterns = parsePatterns(input);
-
+  console.log(patterns.length)
   const reflections = patterns.map((pattern) => {
-    const { columns, rows } = pattern;
-    const original = getScore(pattern);
-
-    for (columnIx = 0; columnIx < columns.length; columnIx++) {
-      for (rowIx = 0; rowIx < rows.length; rowIx++) {
-        const smudgedScore = getSmudgeScore(pattern, [columnIx, rowIx])
-        if (smudgedScore !== original) return smudgedScore;
-      }
-    }
-    throw new Error('No smudged score found')
+    const original = getScores(pattern)[0];
+    const newAndOriginal = getScores(pattern, true);
+    return newAndOriginal;
   })
 
-  return reflections.reduce((acc, reflection) => acc + reflection);
+  return reflections;
 };
-
-function getSmudgeScore({ columns, rows }, [smudgeColumn, smudgeRow]) {
-  const horizontalReflection = findReflectionPointWithSmudge(rows, smudgeRow, smudgeColumn) * 100;
-  const verticalReflection = findReflectionPointWithSmudge(columns, smudgeColumn, smudgeRow);
-
-  return isNaN(horizontalReflection) ? verticalReflection : horizontalReflection;
-}
-
-function findReflectionPointWithSmudge(lines, smudgeLine, smudgeChar) {
-  const midPoint = (lines.length - 1) / 2
-  const possibleCombinations = [];
-
-  for (i = 0; i < midPoint; i++) {
-    possibleCombinations.push([midPoint - i - 1, midPoint - i])
-    possibleCombinations.push([midPoint + i, midPoint + i + 1])
-  }
-
-  const reflectionPoint =
-    possibleCombinations.find(([lowIndex, highIndex]) => isReflectionPointWithSmudge(lines, lowIndex, highIndex, smudgeLine, smudgeChar))
-
-  return reflectionPoint?.[1]
-}
-
-// how we implement? need to adapt comparison to use extra vars
-function isReflectionPointWithSmudge(lines, lowIndex, highIndex, smudgeLineIx, smudgeCharIx) {
-  const low = smudgeLine(lines, lowIndex, smudgeLineIx, smudgeCharIx)
-  const high = smudgeLine(lines, highIndex, smudgeLineIx, smudgeCharIx)
-
-  if (low === high) {
-    if (lowIndex === 0 || highIndex === lines.length - 1) {
-      return true;
-    }
-    return isReflectionPointWithSmudge(lines, lowIndex - 1, highIndex + 1, smudgeLineIx, smudgeCharIx)
-  } else {
-    return false;
-  }
-}
-
-function smudgeLine(lines, index, smudgeLine, smudgeCharIx) {
-  const line = lines[index];
-  if (index === smudgeLine) {
-    const beforeSmudge = line.slice(0, smudgeCharIx);
-    const smudgeChar = line.at(smudgeCharIx)
-    const afterSmudge = line.slice(smudgeCharIx + 1)
-
-    return beforeSmudge + smudgeCorrections[smudgeChar] + afterSmudge;
-  } else {
-    return line;
-  }
-}
-
-const smudgeCorrections = {
-  '.': '#',
-  '#': '.'
-}
