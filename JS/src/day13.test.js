@@ -38,7 +38,12 @@ test("Part 2 Example", () => {
   expect(part2(EXAMPLE_INPUT)).toBe(400);
 });
 
-test.skip("Part 2", () => {
+test("Part 2", () => {
   const input = new Input(13).fromLines().get();
-  expect(part2(input)).toBe(0);
+  expect(part2(input)).toBe(25450);
+});
+
+test("Part 2 Dan", () => {
+  const input = new Input(13, true).fromLines().get();
+  expect(part2(input)).toBe(36735);
 });

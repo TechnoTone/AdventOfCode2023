@@ -56,7 +56,6 @@ function smudgeCount(lineA, lineB) {
 }
 
 function parsePatterns(input) {
-  input.unshift('')
   return input.reduce((acc, row) => {
     if (row === "") {
       acc.push({ rows: [], columns: [] })
@@ -72,7 +71,7 @@ function parsePatterns(input) {
       }
     }
     return acc;
-  }, [])
+  }, [{ rows: [], columns: [] }])
 }
 
 module.exports.part2 = (input) => {
@@ -82,8 +81,8 @@ module.exports.part2 = (input) => {
   const reflections = patterns.map((pattern) => {
     const original = getScores(pattern)[0];
     const newAndOriginal = getScores(pattern, true);
-    return newAndOriginal;
+    return newAndOriginal.filter((score) => score !== original)[0];
   })
 
-  return reflections;
+  return reflections.reduce((acc, reflection) => acc + reflection, 0);
 };
