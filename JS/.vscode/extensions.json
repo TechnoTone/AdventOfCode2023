@@ -2,6 +2,6 @@
   "recommendations": [
     "huuums.vscode-fast-folder-structure",
     "markxoe.advent-of-code",
-    "kavod-io.vscode-jest-test-adapter"
+    "orta.vscode-jest"
   ]
 }
